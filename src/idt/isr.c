@@ -1,6 +1,7 @@
 #include "isr.h"
 #include "idt.h"
 #include "../vga/vga.h"
+#include "../drivers/timer/timer.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -172,17 +173,17 @@ void isr_handler_simd_exception(struct interrupt_frame* frame)
 
 void irq_handler_timer(struct interrupt_frame* frame)
 {
-    print(".");
+    timer_tick();
 }
 
 void irq_handler_keyboard(struct interrupt_frame* frame)
 {
     uint8_t scancode;
-    __asm__ volatile("inb %%dx, %%al" : "=a"(scancode) : "d"((uint16_t)0x60));
+    __asm__ volatile("inb $0x60, %0" : "=a"(scancode));
     
     if (scancode < 0x80)
     {
-        
+        // TODO
     }
 }
 

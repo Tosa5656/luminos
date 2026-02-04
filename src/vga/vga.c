@@ -109,19 +109,46 @@ void print_hex(uint32_t value)
     uint8_t color = get_color_code(DEFAULT_VGA_TEXT_COLOR, DEFAULT_VGA_BACKGROUND_COLOR);
     print("0x");
     
-    if (value == 0) {
+    if (value == 0)
+    {
         putchar('0', color);
         return;
     }
     
-    // Находим первую ненулевую цифру
     int started = 0;
-    for (int i = 28; i >= 0; i -= 4) {
+    for (int i = 28; i >= 0; i -= 4)
+    {
         uint8_t nibble = (value >> i) & 0xF;
-        if (nibble != 0 || started) {
+        if (nibble != 0 || started)
+        {
             started = 1;
             char hex_digit = (nibble < 10) ? ('0' + nibble) : ('A' + nibble - 10);
             putchar(hex_digit, color);
         }
+    }
+}
+
+void print_dec(uint32_t value)
+{
+    uint8_t color = get_color_code(DEFAULT_VGA_TEXT_COLOR, DEFAULT_VGA_BACKGROUND_COLOR);
+    
+    if (value == 0)
+    {
+        putchar('0', color);
+        return;
+    }
+    
+    char buffer[11];
+    int i = 0;
+    
+    while (value > 0)
+    {
+        buffer[i++] = '0' + (value % 10);
+        value /= 10;
+    }
+    
+    for (int j = i - 1; j >= 0; j--)
+    {
+        putchar(buffer[j], color);
     }
 }

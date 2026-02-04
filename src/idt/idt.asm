@@ -15,7 +15,7 @@ global irq8, irq9, irq10, irq11, irq12, irq13, irq14, irq15
 section .text
 
 idt_load:
-    mov eax, [esp + 4]  ; Получаем адрес idt_ptr
+    mov eax, [esp + 4]
     lidt [eax]
     ret
 
@@ -139,11 +139,11 @@ irq_common_stub:
     call interrupt_handler
     add esp, 4
     
-    pop ebx
-    mov ds, bx
-    mov es, bx
-    mov fs, bx
-    mov gs, bx
+    pop eax
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
     
     popa
     add esp, 8
