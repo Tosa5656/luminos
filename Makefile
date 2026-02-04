@@ -11,10 +11,19 @@ bootloader.bin: mkdirs
 vga.o:
 	gcc -m32 -c src/vga/vga.c -o temp/vga.o -ffreestanding -nostdlib -fno-pie
 
-kernel.bin: mkdirs vga.o
+idt_asm.o:
+	nasm -f elf32 src/idt/idt.asm -o temp/idt_asm.o
+
+idt.o:
+	gcc -m32 -c src/idt/idt.c -o temp/idt.o -ffreestanding -nostdlib -fno-pie
+
+isr.o:
+	gcc -m32 -c src/idt/isr.c -o temp/isr.o -ffreestanding -nostdlib -fno-pie
+
+kernel.bin: mkdirs vga.o idt_asm.o idt.o isr.o
 	nasm -f elf32 src/kernel_entry.asm -o temp/kernel_entry.o
 	gcc -m32 -c src/kernel.c -o temp/kernel.o -ffreestanding -nostdlib -fno-pie
-	ld -m elf_i386 -Ttext=0x10000 -o temp/kernel.elf temp/kernel_entry.o temp/kernel.o temp/vga.o
+	ld -m elf_i386 -Ttext=0x10000 -o temp/kernel.elf temp/kernel_entry.o temp/kernel.o temp/vga.o temp/idt_asm.o temp/idt.o temp/isr.o
 	objcopy -O binary temp/kernel.elf temp/kernel.bin
 
 mkdirs:

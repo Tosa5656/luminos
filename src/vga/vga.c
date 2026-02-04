@@ -103,3 +103,25 @@ void print(const char* text)
     for(int i = 0; text[i] != '\0'; i++)
         putchar(text[i], get_color_code(DEFAULT_VGA_TEXT_COLOR, DEFAULT_VGA_BACKGROUND_COLOR));
 }
+
+void print_hex(uint32_t value)
+{
+    uint8_t color = get_color_code(DEFAULT_VGA_TEXT_COLOR, DEFAULT_VGA_BACKGROUND_COLOR);
+    print("0x");
+    
+    if (value == 0) {
+        putchar('0', color);
+        return;
+    }
+    
+    // Находим первую ненулевую цифру
+    int started = 0;
+    for (int i = 28; i >= 0; i -= 4) {
+        uint8_t nibble = (value >> i) & 0xF;
+        if (nibble != 0 || started) {
+            started = 1;
+            char hex_digit = (nibble < 10) ? ('0' + nibble) : ('A' + nibble - 10);
+            putchar(hex_digit, color);
+        }
+    }
+}
