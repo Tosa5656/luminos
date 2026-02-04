@@ -35,6 +35,8 @@ extern int vga_column;
 void vga_init();
 uint8_t get_color_code(enum vga_color text_color, enum vga_color background_color);
 uint16_t get_char(char ch, uint8_t color);
+void clear_screen(uint8_t color);
 void print(const char* text);
 void print_hex(uint32_t value);
 void print_dec(uint32_t value);
+void print_centered(const char* text, uint8_t color);

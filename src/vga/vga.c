@@ -21,6 +21,12 @@ uint16_t get_char(char ch, uint8_t color)
     return (uint16_t) ch | ((uint16_t) color << 8);
 }
 
+void clear_screen(uint8_t color)
+{
+    for(int i = 0; i < VGA_BUFFER_WIDTH * VGA_BUFFER_HEIGHT; i++)
+        vga_buffer[i] = get_char(' ', color);
+}
+
 void putchar(char ch, uint8_t color)
 {
     if (vga_buffer == 0)
@@ -131,24 +137,52 @@ void print_hex(uint32_t value)
 void print_dec(uint32_t value)
 {
     uint8_t color = get_color_code(DEFAULT_VGA_TEXT_COLOR, DEFAULT_VGA_BACKGROUND_COLOR);
-    
+
     if (value == 0)
     {
         putchar('0', color);
         return;
     }
-    
+
     char buffer[11];
     int i = 0;
-    
+
     while (value > 0)
     {
         buffer[i++] = '0' + (value % 10);
         value /= 10;
     }
-    
+
     for (int j = i - 1; j >= 0; j--)
     {
         putchar(buffer[j], color);
+    }
+}
+
+void print_centered(const char* text, uint8_t color)
+{
+    if (!text || !*text) return;
+
+    int line_len = 0;
+    const char* ptr = text;
+    while (*ptr && *ptr != '\n' && line_len < 80)
+    {
+        if (*ptr >= 32 && *ptr <= 126) line_len++;
+        ptr++;
+    }
+
+    if (line_len == 0) return;
+
+    int start_col = (VGA_BUFFER_WIDTH - line_len) / 2;
+    if (start_col < 0) start_col = 0;
+
+    vga_column = start_col;
+
+    ptr = text;
+    while (*ptr && *ptr != '\n' && line_len > 0)
+    {
+        putchar(*ptr, color);
+        ptr++;
+        line_len--;
     }
 }

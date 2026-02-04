@@ -2,6 +2,7 @@
 #include "idt/idt.h"
 #include "idt/isr.h"
 #include "drivers/timer/timer.h"
+#include "panic.h"
 
 void kernel_main(void)
 {
@@ -16,8 +17,8 @@ void kernel_main(void)
     timer_init();
     
     enable_interrupts();
-
-    print("LuminOS Kernel inited!\n");
+    
+    print_centered("LuminOS Kernel initialized!", get_color_code(DEFAULT_VGA_TEXT_COLOR, DEFAULT_VGA_BACKGROUND_COLOR));
     timer_wait(2000);
-    print("LuminOS Kernel inited x2!\n");
+    panic("Welcome to LuminOS!");
 }
